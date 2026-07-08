@@ -16,116 +16,115 @@ class DemoDataSeeder extends Seeder
     public function run(): void
     {
        
-        $baseDate = Carbon::parse('2026-06-01');
-        $holidayDate = $baseDate->copy()->addDays(9); 
-
         Holiday::create([
-            'holiday_date' => $holidayDate->format('Y-m-d'),
-            'title' => 'Mid-Summer Festival'
+            'holiday_date' => '2026-07-03',
+            'title' => 'Founders Day'
         ]);
 
-      
+       
         $emp1 = Employee::create([
             'employee_code' => 'EMP-001',
-            'name' => 'Alice Ideal',
+            'name' => 'Alice Johnson',
             'department_id' => 1,
-            'joining_date' => '2026-06-01',
+            'joining_date' => '2026-07-01',
             'status' => 'Active'
         ]);
 
-        $dates1 = ['2026-06-01', '2026-06-02', '2026-06-03', '2026-06-04', '2026-06-05', '2026-06-08'];
+        $dates1 = ['2026-07-01', '2026-07-02', '2026-07-03', '2026-07-06', '2026-07-07', '2026-07-08'];
         foreach ($dates1 as $date) {
             Attendance::create(['employee_id' => $emp1->id, 'attendance_date' => $date, 'status' => 'Present']);
         }
 
 
-        
         $emp2 = Employee::create([
             'employee_code' => 'EMP-002',
-            'name' => 'Bob Holiday',
+            'name' => 'Bob Smith',
             'department_id' => 1,
-            'joining_date' => '2026-06-08',
+            'joining_date' => '2026-07-01',
             'status' => 'Active'
         ]);
 
-        $dates2 = ['2026-06-08', '2026-06-09', '2026-06-11', '2026-06-12', '2026-06-15'];
+        $dates2 = ['2026-07-01', '2026-07-02', '2026-07-06', '2026-07-07', '2026-07-08'];
         foreach ($dates2 as $date) {
             Attendance::create(['employee_id' => $emp2->id, 'attendance_date' => $date, 'status' => 'Present']);
         }
 
 
-      
         $emp3 = Employee::create([
             'employee_code' => 'EMP-003',
-            'name' => 'Charlie Broken',
+            'name' => 'Charlie Brown',
             'department_id' => 2,
-            'joining_date' => '2026-06-01',
+            'joining_date' => '2026-07-01',
             'status' => 'Active'
         ]);
 
-        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-06-01', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-06-02', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-06-03', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-06-04', 'status' => 'Leave']);
-        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-06-05', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-06-08', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-06-09', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-01', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-02', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-03', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-06', 'status' => 'Leave']);
+        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
 
-
-       
+      
         $emp4 = Employee::create([
             'employee_code' => 'EMP-004',
-            'name' => 'David Missing',
+            'name' => 'David Lee',
             'department_id' => 2,
-            'joining_date' => '2026-06-01',
+            'joining_date' => '2026-07-01',
             'status' => 'Active'
         ]);
 
-        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-06-01', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-06-02', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-06-03', 'status' => 'Present']);
-        
-        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-06-05', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-06-08', 'status' => 'Present']);
-        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-06-09', 'status' => 'Present']);
-
+        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-01', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-02', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-03', 'status' => 'Present']);
+        // NO RECORD FOR JUL 6 (Monday) - treated as Absent!
+        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
 
        
         $emp5 = Employee::create([
             'employee_code' => 'EMP-005',
-            'name' => 'Eve Inactive',
+            'name' => 'Eve Wilson',
             'department_id' => 3,
-            'joining_date' => '2026-06-01',
+            'joining_date' => '2026-07-01',
             'status' => 'Inactive'
         ]);
 
-        for ($i = 0; $i < 10; $i++) {
-            $date = Carbon::parse('2026-06-01')->addWeekdays($i)->format('Y-m-d');
+        $dates5 = ['2026-07-01', '2026-07-02', '2026-07-03', '2026-07-06', '2026-07-07', '2026-07-08'];
+        foreach ($dates5 as $date) {
             Attendance::create(['employee_id' => $emp5->id, 'attendance_date' => $date, 'status' => 'Present']);
         }
 
-
-
+      
         $emp6 = Employee::create([
             'employee_code' => 'EMP-006',
-            'name' => 'Frank Multi',
+            'name' => 'Frank Davis',
             'department_id' => 3,
-            'joining_date' => '2026-06-01',
+            'joining_date' => '2026-07-01',
             'status' => 'Active'
         ]);
 
-        
-        $dates6_1 = ['2026-06-01', '2026-06-02', '2026-06-03', '2026-06-04', '2026-06-05'];
-        foreach ($dates6_1 as $date) {
-            Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => $date, 'status' => 'Present']);
-        }
-        
-        
-        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-06-08', 'status' => 'Absent']);
+        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-01', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-02', 'status' => 'Half Day']);
+        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-03', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-06', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
 
+        
+        $emp7 = Employee::create([
+            'employee_code' => 'EMP-007',
+            'name' => 'Grace Miller',
+            'department_id' => 1,
+            'joining_date' => '2026-07-01',
+            'status' => 'Active'
+        ]);
 
-        $dates6_2 = ['2026-06-09', '2026-06-11', '2026-06-12', '2026-06-15', '2026-06-16']; 
-            Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => $date, 'status' => 'Present']);
-        }
+        Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-01', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-02', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-03', 'status' => 'Absent']);
+        Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-06', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
     }
 }
