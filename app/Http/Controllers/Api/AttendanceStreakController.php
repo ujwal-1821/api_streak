@@ -19,14 +19,31 @@ class AttendanceStreakController extends Controller
      */
     public function index(Request $request)
     {
-        $minStreak = (int) $request->input('min_streak', 5);
-        
-        $employees = $this->streakService->getEmployeesWithMinStreak($minStreak);
+        try {
+            $minStreak = (int) $request->input('min_streak', 5);
+            
+            $employees = $this->streakService->getEmployeesWithMinStreak($minStreak);
 
-         return response()->json([
-            'success' => true,
-            'message' => 'Employees with attendance streak retrieved successfully.',
-            'data' => EmployeeStreakResource::collection($employees)
+            if ($employees->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No employees found with the specified minimum attendance streak.',
+                    'data' => []
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Employees with attendance streak retrieved successfully.',
+                'data' => EmployeeStreakResource::collection($employees)
             ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching the attendance streak.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
