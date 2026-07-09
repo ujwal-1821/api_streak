@@ -5,31 +5,39 @@ API that identifies employees with **minimum 5 consecutive working days marked a
 
 ---
 
-## 📊 Test Data (7 Employees)
+## 📊 Test Data (7 Employees) - **3 Qualify with Jul 9 added**
 
 ### ✅ QUALIFIES (Response में दिखेंगे)
 
 **EMP-001: Alice Perfect** ✅
 ```
 Seeder Name: Alice Perfect
-Attendance: Jul 1,2,3,6,7,8 → All Present
-Streak: longest_streak = 5, current_streak = 0
+Attendance: Jul 1,2,3,6,7,8,9 → All Present
+Streak: longest_streak = 5, current_streak = 4
 Status: Active
 Result: ✅ QUALIFIES (5 >= 5)
-
-⚠️ Note: current_streak = 0 means no recent attendance
-(Last present may be older than today or there's a gap)
 ```
 
-**EMP-002: Bob Smith**
+**EMP-002: Bob Smith** ✅
 ```
 Seeder Name: Bob Smith
 Attendance: Jul 1,2 → Present
            Jul 3 → PUBLIC HOLIDAY (no record, ignored)
-           Jul 6,7,8 → Present
-Streak: longest_streak = 5, current_streak = 5
+           Jul 6,7,8,9 → Present
+Streak: longest_streak = 5, current_streak = 4
 Status: Active
 Result: ✅ QUALIFIES (5 >= 5)
+```
+
+**EMP-006: Frank Davis** ✅ NEW (with Jul 9)
+```
+Attendance: Jul 1 → Present (1 day)
+           Jul 2 → HALF DAY ❌ (breaks streak)
+           Jul 3,6,7,8,9 → Present (5 consecutive days)
+Longest Streak: 5
+Current Streak: 5
+Status: Active
+Result: ✅ QUALIFIES (5 >= 5) - Reaches threshold on Jul 9!
 ```
 
 ---
@@ -40,7 +48,7 @@ Result: ✅ QUALIFIES (5 >= 5)
 ```
 Attendance: Jul 1,2,3 → Present (3 days)
            Jul 6 → LEAVE ❌ (streak breaks)
-           Jul 7,8 → Present (2 new days)
+           Jul 7,8,9 → Present (3 new days)
 Longest Streak: 3
 Reason: ❌ 3 < 5 (Leave breaks streak)
 ```
@@ -49,35 +57,37 @@ Reason: ❌ 3 < 5 (Leave breaks streak)
 ```
 Attendance: Jul 1,2,3 → Present (3 days)
            Jul 6 → NO RECORD ❌ (treated as Absent, breaks)
-           Jul 7,8 → Present (2 new days)
+           Jul 7,8,9 → Present (3 new days)
 Longest Streak: 3
 Reason: ❌ 3 < 5 (Missing = Absent)
 ```
 
 **EMP-005: Eve Wilson**
 ```
-Attendance: Jul 1,2,3,6,7,8 → All Present (6 days)
+Attendance: Jul 1,2,3,6,7,8,9 → All Present (7 days)
 Status: INACTIVE ❌
-Longest Streak: 6 (would qualify)
+Longest Streak: 7 (would qualify)
 Reason: ❌ Filtered by status (only Active employees returned)
 ```
 
-**EMP-006: Frank Davis**
+**EMP-006: Frank Davis** ✅ NEW
 ```
 Attendance: Jul 1 → Present (1 day)
            Jul 2 → HALF DAY ❌ (breaks streak)
-           Jul 3,6,7,8 → Present (4 days)
-Longest Streak: 4
-Reason: ❌ 4 < 5 (Half Day breaks streak)
+           Jul 3,6,7,8,9 → Present (5 days)
+Longest Streak: 5
+Current Streak: 5
+Reason: ✅ 5 >= 5 (Half Day breaks but new streak reaches 5)
+Result: ✅ QUALIFIES
 ```
 
 **EMP-007: Grace Miller**
 ```
 Attendance: Jul 1,2 → Present (2 days)
            Jul 3 → ABSENT ❌ (breaks streak)
-           Jul 6,7,8 → Present (3 days)
-Longest Streak: 3
-Reason: ❌ 3 < 5 (Absent breaks streak)
+           Jul 6,7,8,9 → Present (4 days)
+Longest Streak: 4
+Reason: ❌ 4 < 5 (Absent breaks streak)
 ```
 
 ---
@@ -93,7 +103,8 @@ Jul 4 (Sat) - WEEKEND (skipped)
 Jul 5 (Sun) - WEEKEND (skipped)
 Jul 6 (Mon)
 Jul 7 (Tue)
-Jul 8 (Wed) - TODAY (seeder date)
+Jul 8 (Wed)
+Jul 9 (Thu) - TODAY (current date)
 ```
 
 ---
@@ -102,13 +113,13 @@ Jul 8 (Wed) - TODAY (seeder date)
 
 | Rule | Tested By | How It Works |
 |------|-----------|--------------|
-| **Min 5 consecutive days** | Alice (6), Bob (5) | Both qualify exactly when minimum met |
+| **Min 5 consecutive days** | Alice (5), Bob (5), Frank (5) | All three qualify with exactly 5+ days |
 | **Only Mon-Fri** | All employees | Weekends automatically skipped |
 | **Weekends ignored** | All | Sat-Sun not counted, Fri→Mon is consecutive |
 | **Holidays don't break** | Bob (Jul 3) | Holiday skipped, 5 days still continuous |
 | **Leave breaks streak** | Charlie (Jul 6) | Leave resets counter to 0 |
 | **Absent breaks streak** | Grace (Jul 3) | Absent resets counter to 0 |
-| **Half Day breaks streak** | Frank (Jul 2) | Half Day treated like Absent |
+| **Half Day breaks streak** | Frank (Jul 2) | Half Day treated like Absent, but new streak reaches 5 |
 | **Missing = Absent** | David (Jul 6) | No record → reset counter |
 | **Status filter** | Eve | Inactive employees excluded |
 | **Longest + Current** | All with breaks | Both values tracked separately |
@@ -135,12 +146,19 @@ Jul 8 (Wed) - TODAY (seeder date)
       "employee_code": "EMP-001",
       "name": "Alice Perfect",
       "longest_streak": 5,
-      "current_streak": 0
+      "current_streak": 4
     },
     {
       "id": 2,
       "employee_code": "EMP-002",
       "name": "Bob Smith",
+      "longest_streak": 5,
+      "current_streak": 4
+    },
+    {
+      "id": 6,
+      "employee_code": "EMP-006",
+      "name": "Frank Davis",
       "longest_streak": 5,
       "current_streak": 5
     }

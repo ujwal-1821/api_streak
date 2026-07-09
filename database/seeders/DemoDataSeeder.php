@@ -30,7 +30,7 @@ class DemoDataSeeder extends Seeder
             'status' => 'Active'
         ]);
 
-        $dates1 = ['2026-07-01', '2026-07-02', '2026-07-03', '2026-07-06', '2026-07-07', '2026-07-08'];
+        $dates1 = ['2026-07-01', '2026-07-02', '2026-07-03', '2026-07-06', '2026-07-07', '2026-07-08', '2026-07-09'];
         foreach ($dates1 as $date) {
             Attendance::create(['employee_id' => $emp1->id, 'attendance_date' => $date, 'status' => 'Present']);
         }
@@ -44,7 +44,7 @@ class DemoDataSeeder extends Seeder
             'status' => 'Active'
         ]);
 
-        $dates2 = ['2026-07-01', '2026-07-02', '2026-07-06', '2026-07-07', '2026-07-08'];
+        $dates2 = ['2026-07-01', '2026-07-02', '2026-07-06', '2026-07-07', '2026-07-08', '2026-07-09'];
         foreach ($dates2 as $date) {
             Attendance::create(['employee_id' => $emp2->id, 'attendance_date' => $date, 'status' => 'Present']);
         }
@@ -64,6 +64,7 @@ class DemoDataSeeder extends Seeder
         Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-06', 'status' => 'Leave']);
         Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
         Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp3->id, 'attendance_date' => '2026-07-09', 'status' => 'Present']);
 
       
         $emp4 = Employee::create([
@@ -80,6 +81,7 @@ class DemoDataSeeder extends Seeder
         // NO RECORD FOR JUL 6 (Monday) - treated as Absent!
         Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
         Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp4->id, 'attendance_date' => '2026-07-09', 'status' => 'Present']);
 
        
         $emp5 = Employee::create([
@@ -90,7 +92,7 @@ class DemoDataSeeder extends Seeder
             'status' => 'Inactive'
         ]);
 
-        $dates5 = ['2026-07-01', '2026-07-02', '2026-07-03', '2026-07-06', '2026-07-07', '2026-07-08'];
+        $dates5 = ['2026-07-01', '2026-07-02', '2026-07-03', '2026-07-06', '2026-07-07', '2026-07-08', '2026-07-09'];
         foreach ($dates5 as $date) {
             Attendance::create(['employee_id' => $emp5->id, 'attendance_date' => $date, 'status' => 'Present']);
         }
@@ -110,6 +112,7 @@ class DemoDataSeeder extends Seeder
         Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-06', 'status' => 'Present']);
         Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
         Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp6->id, 'attendance_date' => '2026-07-09', 'status' => 'Present']);
 
         
         $emp7 = Employee::create([
@@ -126,5 +129,6 @@ class DemoDataSeeder extends Seeder
         Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-06', 'status' => 'Present']);
         Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-07', 'status' => 'Present']);
         Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-08', 'status' => 'Present']);
+        Attendance::create(['employee_id' => $emp7->id, 'attendance_date' => '2026-07-09', 'status' => 'Present']);
     }
 }
