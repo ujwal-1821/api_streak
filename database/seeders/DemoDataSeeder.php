@@ -24,7 +24,7 @@ class DemoDataSeeder extends Seeder
        
         $emp1 = Employee::create([
             'employee_code' => 'EMP-001',
-            'name' => 'Alice Johnson',
+            'name' => 'Alice Perfect',
             'department_id' => 1,
             'joining_date' => '2026-07-01',
             'status' => 'Active'
