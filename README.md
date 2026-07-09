@@ -1,66 +1,113 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+  <h1>🚀 Employee Attendance Streak API</h1>
+  <p>A Laravel-based robust API solution to calculate and identify employees maintaining an attendance streak, handling complex business logic, weekends, holidays, and edge cases.</p>
+</div>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 📌 Project Overview
+This project is an API developed in Laravel that determines which **Active** employees have maintained a minimum consecutive attendance streak (default: 5 days). It is built with a focus on **clean code, reusability, and performance optimization**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ System Architecture & Design Patterns
+To ensure scalability and maintainability, the project implements the following industry-standard design patterns:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Service Pattern (`AttendanceStreakService`)**
+   - **Why?** Keeps the Controller extremely thin. All complex time-series calculation, weekend-skipping, and streak logic is isolated in a reusable Service class.
+2. **API Resources (`EmployeeStreakResource`)**
+   - **Why?** Encapsulates the JSON response structure. It ensures the API output is clean, hiding database schema details (like `created_at`, `department_id`) from the end client.
+3. **Eager Loading (`with('attendances')`)**
+   - **Why?** Solves the notorious **N+1 Query Problem**. Instead of running a new query for every employee's attendance, it pulls all relevant data in highly optimized batches.
+4. **Database Indexing**
+   - **Why?** Added composite indexes on `(employee_id, attendance_date, status)` to ensure lookups are lightning-fast even with millions of attendance rows.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🔌 API Documentation
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### **Endpoint:** Get Qualifying Employees
+Returns a list of active employees who meet the minimum streak requirement, along with their longest and current streaks.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **URL:** `/api/employees/streak`
+- **Method:** `GET`
+- **Headers:** `Accept: application/json`
 
-## Laravel Sponsors
+#### **Query Parameters (Optional)**
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `min_streak` | `integer` | `5` | The minimum number of consecutive days required. |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### **Example Request**
+```bash
+curl -X GET "http://127.0.0.1:8000/api/employees/streak?min_streak=5" -H "Accept: application/json"
+```
 
-### Premium Partners
+#### **Success Response (200 OK)**
+```json
+{
+    "success": true,
+    "message": "Employees with attendance streak retrieved successfully.",
+    "data": [
+        {
+            "id": 1,
+            "employee_code": "EMP-001",
+            "name": "Alice Ideal",
+            "longest_streak": 6,
+            "current_streak": 0
+        },
+        {
+            "id": 2,
+            "employee_code": "EMP-002",
+            "name": "Bob Holiday",
+            "longest_streak": 5,
+            "current_streak": 0
+        }
+    ]
+}
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 🧠 Business Rules & Edge Cases Handled
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The `AttendanceStreakService` algorithm is robust and handles the following scenarios automatically:
+1. **Weekends Ignored:** Saturdays and Sundays do not break streaks. Friday $\rightarrow$ Monday is considered consecutive.
+2. **Public Holidays Ignored:** Public holidays (stored in the `holidays` table) do not break the streak. They are simply skipped.
+3. **Streak Breakers:** Any status of `Absent`, `Leave`, or `Half Day` immediately resets the streak to `0`.
+4. **Missing Records = Absent:** If an employee has no attendance record on a valid working day, the algorithm treats it as an absence and breaks the streak.
+5. **Inactive Employees Filtered:** Employees with a status of `Inactive` are entirely ignored at the database query level.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 How to Setup and Run for Demo
 
-## Security Vulnerabilities
+Follow these steps to run the project and populate it with pre-configured edge-case demo data:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 1. Install Dependencies
+*(Assuming Composer and PHP are installed)*
+```bash
+composer install
+```
 
-## License
+### 2. Setup the Database & Seed Demo Data
+The project uses SQLite for rapid demonstration. The provided seeder automatically injects 6 specific test cases into the database to prove the logic handles all business rules perfectly.
+```bash
+php artisan migrate:fresh --seed
+```
+*Note: The seeder inserts `Alice` (Ideal), `Bob` (Holiday skip), `Charlie` (Broken streak), `David` (Missing record), `Eve` (Inactive), and `Frank` (Multiple streaks).*
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 3. Start the Server
+```bash
+php artisan serve
+```
+
+### 4. Test the API
+Hit the following URL in Postman or your browser:
+**`http://127.0.0.1:8000/api/employees/streak`**
+
+---
+
+<div align="center">
+  <i>Developed to showcase clean Laravel architecture and complex algorithmic problem solving.</i>
+</div>

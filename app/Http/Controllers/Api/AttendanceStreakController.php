@@ -23,10 +23,10 @@ class AttendanceStreakController extends Controller
         
         $employees = $this->streakService->getEmployeesWithMinStreak($minStreak);
 
-        return response()->json([
+         return response()->json([
             'success' => true,
             'message' => 'Employees with attendance streak retrieved successfully.',
             'data' => EmployeeStreakResource::collection($employees)
-        ]);
+            ], 200);
     }
 }
